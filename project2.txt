@@ -1,0 +1,136 @@
+//head
+$fn=50;
+points = [
+    [0, 0, 0], // 底面左下角
+    [10, 0, 0], // 底面右下角
+    [8, 5, 0], // 底面右上角
+    [2, 5, 0], // 底面左上角
+    [0, 0, 5], // 顶面左下角
+    [10, 0, 5], // 顶面右下角
+    [8, 5, 5], // 顶面右上角
+    [2, 5, 5] // 顶面左上角
+];
+faces = [
+    [0, 1, 2, 3], // 底面
+    [7, 6, 5, 4], // 顶面
+    [0, 3, 7, 4], // 左侧面
+    [1, 5, 6, 2], // 右侧面
+    [3, 2, 6, 7], // 后侧面
+    [0, 4, 5, 1] // 前侧面
+];
+translate([0,-5,30])
+    rotate([50,-103,40])
+    union(){sphere(5);cylinder(10, 5, 3);translate([0,0,10])sphere(3);}
+
+//horn
+module horn(h = 11.5, x = 0.2){
+    
+    for (i = [0:0.1:h]){
+        translate([0,pow(2, i)*0.01,i]) cylinder(0.1,(h-i)*0.2,(h-i)*0.2);
+    }
+}
+translate([-2,-5,30])
+    rotate([-5,-1,20])
+    horn();//left horn
+translate([2,-5,30])
+    rotate([-5,-1,-20])
+    horn();//right horn
+
+module triangle (side, tall, corner_rad, triangle_height){ //side of head scale function
+    translate([0, corner_rad, 0]);
+    hull(){
+        translate([side/2-corner_rad, 0]) cylinder(r=corner_rad, h=triangle_height);
+        translate([-side/2+corner_rad, 0]) cylinder(r=corner_rad, h=triangle_height);
+        translate([0, tall-corner_rad*2, 0]) cylinder(r=corner_rad, h=triangle_height);
+    }
+}
+//right scales
+translate([4, -5, 31]) rotate([90, 90, 10]) triangle(3, 7, 0.2, 0.2);
+translate([4, -5, 30]) rotate([90, 110, 10]) triangle(2, 6, 0.2, 0.2);
+translate([4, -5, 32]) rotate([90, 60, 10]) triangle(2, 6, 0.2, 0.2);
+//left scales 
+translate([-4, -5, 31]) rotate([90, -80, 10]) triangle(3, 7, 0.2, 0.2);
+translate([-4, -5, 30]) rotate([90, -100, 10]) triangle(2, 6, 0.2, 0.2);
+translate([-4, -5, 32]) rotate([90, -50, 10]) triangle(2, 6, 0.2, 0.2);
+//eyes
+module eye(){cylinder(h=0.4, r1=1,r2=0.7,$fn=3);
+}
+translate([-3,-10,32])
+    rotate([30,40,-100])
+    eye();//left
+translate([3,-10,32])
+    rotate([-30,35,-70])
+    eye();//right
+//nose
+module nose() {cylinder(h=1, r1=0.5,r2=0,$fn=50);
+}
+translate([-1,-17,30.3])
+    rotate([-90,0,0])
+    nose();//left
+translate([1.3,-17,30.3])
+    rotate([-90,0,0])
+    nose();
+//chin
+translate([0.2,-14.3,26.5])
+    rotate([0,90,0])
+    resize([1,7,3.5])
+    sphere(1);
+    
+        
+    
+    
+
+module claw() {
+    cylinder(h=8, r1=2, r2=1.5, $fn=30);
+    translate ([0, 0, 8])sphere(r=1.6, $fn=40);
+    translate([-0.4, 0, 8]) rotate([55, 0, 90]) cylinder (h=7, r1=1.3, r2=1, $fn=30);
+    translate ([6, 0, 12.5])sphere(r=1.3, $fn=40);
+     translate([6, 0.4, 12.5]) rotate([48, 0, 130]) cylinder (h=2.5, r1=0.8, r2=0, $fn=20);
+    translate([6, 0.2, 12.5]) rotate([48, 0, 110]) cylinder (h=2.5, r1=0.8, r2=0, $fn=20);
+    translate([6, 0, 12.5]) rotate([48, 0, 90]) cylinder (h=2.5, r1=0.8, r2=0, $fn=20);
+    translate([6, -0.2, 12.5]) rotate([48, 0, 70]) cylinder (h=2.5, r1=0.8, r2=0, $fn=20);
+    translate([6, -0.4, 12.5]) rotate([48, 0, 50]) cylinder (h=2.5, r1=0.8, r2=0, $fn=20);}
+    
+translate([-2.35, 13, 12]) rotate([70, -71, -40]) claw(); //front-right
+translate([2.35, 13, 12]) rotate([130, -90, 15]) claw(); //front-left
+
+
+//body segment 1
+module body1() {
+    rotate(a=0, v=[0, 1, 0]) //rotate by how many angles, along which axis
+    rotate_extrude(angle=200, $fn=30) //180 deg rotate; resolution (how many pieces make up the extrusion (can use on any 2D object (circle in this case))
+    translate([15, 0, 0]) //move along x-axis
+        circle(r=3.5, $fn=50);
+}
+  
+//body segment 2
+module body2() {
+    rotate(a=-10, v=[0, 1, 0])
+    rotate_extrude(angle=180, $fn=30)
+    translate([15, 0, 0]) 
+        circle(r=3.5, $fn=50);
+}
+
+    
+//body segment 3
+module body3() {
+    rotate(a=-8, v=[0, 1, 0]) 
+    rotate_extrude(angle=180, $fn=30)
+    translate([15, 0, 0]) 
+        circle(r=3.5, $fn=50);
+}
+
+//body segment 4
+module body4() {
+    rotate(a=5, v=[0, 1, 0])
+    rotate_extrude(angle=80, $fn=30) 
+    translate([15, 0, 0]) 
+        circle(r=3.5, $fn=50); 
+}
+
+rotate([90, 90, 90]) translate([-15, 0, 0]) body1 ();
+rotate([180, 90, 0]) translate([14.7, 0, 2.6]) body2 ();
+rotate([0, 90, 0]) translate([14.7, 0, -7.3]) body3 ();
+rotate([180, 90, 0]) translate([-15.2, 0, 10.7]) body4 ();
+//tail
+translate([-11.55,-17.3,26.31]) rotate([-10.5, 175.5, 0]) cylinder(h=14, r1=0.5, r2=3.5);
